@@ -1,0 +1,52 @@
+{
+    "hc-caas": {
+      "mongodbURI": "mongodb://127.0.0.1:27017/conversionsdocker",
+      "workingDirectory": "/app/tempData",
+      "runModelManager": true,
+      "runStreamingServer": true,
+      "runConversionServer": true,
+      "fullErrorReporting": true,
+      "serviceIP": "",
+      "licenseFile": "/app/communicatorLicense.txt",
+      "modelManager": {
+        "purgeFiles": true,
+        "runStreamingManager": true
+      },
+      "conversionServer": {
+        "name": "CaaS Conversion",
+        "converterpath": "/app/HOOPS_Communicator/authoring/converter/bin/linux64"
+      },
+      "streamingServer": {
+        "name": "CaaS Streaming",
+        "streamingRegion" : "America",
+        "scserverpath": "/app/HOOPS_Communicator/server/bin/linux64",
+        "publicPort":80
+      },
+      "localCache": {
+        "maxSize": 500
+      },
+      "storage": {
+        "type": "filesystem"
+      }
+    },
+    "hc-caas-um": {
+      "uploadDirectory": "/app/tempData/uploads_um",
+      "mongodbURI": "mongodb://127.0.0.1:27017/caas_demo_app_docker",
+      "useStreaming": true,
+      "publicURL": "",
+      "publicPort": 80,
+      "serveSite" : true,
+      "demoUser" : "demo@techsoft3d.com",
+      "demoUserPassword" : "demo"
+    },
+    "ssl": {
+      "keyPath":"",
+      "certPath":""
+    },
+    "startCaaS" : true,
+    "startUM" : true,
+    "startProxy" : true,
+    "serveHCDemoSite": true
+  }
+    
+  

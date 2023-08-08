@@ -1,0 +1,52 @@
+{
+    "hc-caas": {
+      "mongodbURI": "mongodb://adminUser:ts3d@127.0.0.1:27017/conversions?authSource=admin",
+      "workingDirectory": "/home/ubuntu/tempData",
+      "runModelManager": true,
+      "runStreamingServer": true,
+      "runConversionServer": true,
+      "fullErrorReporting": true,
+      "serviceIP": "",
+      "licenseFile": "/home/ubuntu/communicatorLicense.txt",
+      "modelManager": {
+        "purgeFiles": true,
+        "runStreamingManager": true
+      },
+      "conversionServer": {
+        "name": "CaaS Conversion",
+        "converterpath": "/home/ubuntu/HOOPS_Communicator/authoring/converter/bin/linux64"
+      },
+      "streamingServer": {
+        "name": "CaaS Streaming",
+        "streamingRegion" : "America",
+        "scserverpath": "/home/ubuntu/HOOPS_Communicator/server/bin/linux64",
+        "publicPort":80
+      },
+      "localCache": {
+        "maxSize": 500
+      },
+      "storage": {
+        "type": "filesystem"
+      }
+    },
+    "hc-caas-um": {
+      "uploadDirectory": "/home/ubuntu/tempData/uploads_um",
+      "mongodbURI": "mongodb://adminUser:ts3d@127.0.0.1:27017/caas_demo_app?authSource=admin",
+      "useStreaming": true,
+      "publicURL": "",
+      "publicPort": 80,
+      "serveSite" : true,
+      "demoUser" : "demo@techsoft3d.com",
+      "demoUserPassword" : "demo"
+    },
+    "ssl": {
+      "keyPath":"",
+      "certPath":""
+    },
+    "startCaaS" : true,
+    "startUM" : true,
+    "startProxy" : true,
+    "serveHCDemoSite": true
+  }
+    
+  

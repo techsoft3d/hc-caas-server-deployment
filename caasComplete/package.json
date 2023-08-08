@@ -1,0 +1,17 @@
+{
+  "name": "ts3d-hc-caas-complete",
+  "version": "0.3.0",
+  "description": "",
+  "main": "proxyAll.js",
+  "scripts": {
+    "start": "node proxyAll.js" 
+  },
+  "author": "Guido Hoffmann",
+  "license": "",
+  "dependencies": {
+    "config": "^3.3.9",
+    "express": "^4.18.2",
+    "ts3d.hc.caas": "0.10.3",
+    "ts3d.hc.caas.usermanagement": "0.6.49"
+  }
+}
