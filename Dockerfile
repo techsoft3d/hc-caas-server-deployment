@@ -45,7 +45,7 @@ COPY caasComplete/proxyAll.js ./caasComplete
 COPY caasComplete/config/docker.json ./caasComplete/config/local.json
 COPY caasComplete/hc-demoapp-frontend ./caasComplete/hc-demoapp-frontend
 
-COPY communicatorLicenseEmpty.txt ./communicatorLicense.txt
+COPY communicatorLicense.txt .
 COPY startAll.sh .
 
 COPY updateHC.sh .
