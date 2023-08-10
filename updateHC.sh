@@ -1,7 +1,6 @@
 #!/bin/bash
 # public URL of HC tar file (e.g. dropbox, google drive, etc.)
 #URL="https://location.of.hoops/commmunicator.tar.file/HOOPS_Communicator_2023_SP2_Linux.tar.gz"
-URL="https://www.dropbox.com/scl/fi/ki2tm01oe6imrrol7z0gp/archive.tar.gz?rlkey=e64zv0sawbq4jahzdw6si7ado&dl=0"
 
 rm -r HOOPS_Communicator
 
