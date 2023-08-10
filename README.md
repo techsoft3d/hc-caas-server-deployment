@@ -8,7 +8,7 @@ We have recently released CaaS, which is a fully scalable conversion, streaming 
 ## What are you getting
 Using the AMI or Docker image you get without any extra work:
 * A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node module or REST API. This includes token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming within your web-application.
-* A User Management node module with Hub and Project support, including a full front-end reference application which you can  as a starting point for your own development.
+* A User Management node module with Hub and Project support, including a full front-end reference application which you can use as a starting point for your own development.
 
 
 ## Prerequisites
@@ -117,23 +117,25 @@ The AMI is configured to run with PM2 which automatically restarts the server in
 ``pm2 stop`` 
 You can then manually start it in the foreground by running the ``./startAll.sh`` script, however you should only do this for debugging purposes. 
 
-If you make any changes to the configuration, Caas needs to be restarted for those changes to take effect. The easiest way to do this is by simply rebooting the instance with ``sudo reboot``;
+If you make any changes to the configuration, Caas needs to be restarted for those changes to take effect. The easiest way to do this is by simply rebooting the instance with ``sudo reboot``.
 
 On every restart the node packages of CaaS will be updated to the latest minor version. If you want to prevent this, you can comment out the releveant lines in ``startAll.sh``
 
-The AMI/Docker Image comes with a version of HOOPS Communicator. If you want to update it to the latest version, you can do so by either manually replacing the content of the HOOPS Communicator linux package in the HOOPS_Communicator folder or by running the ``updateHC.sh`` script. This script will look for a package of HOOPS Communicator at the public URL specified in the first line of the script. You can use a service like dropbox, etc or use a public S3 bucket to host the package in that case. Tech Soft 3D currently does not provide public links to HOOPS Communicator packages. Be aware that both HOOPS Communicator reference applications rely on a certain version of HOOPS Communicator so you should only update if this version matches the package.
+The AMI/Docker Image comes with a version of HOOPS Communicator. If you want to update it to the latest version, you can do so by either manually replacing the content of the HOOPS Communicator linux package in the HOOPS_Communicator folder or by running the ``updateHC.sh`` script. This script will look for a package of HOOPS Communicator at the public URL specified in the first line of the script. You can use a service like dropbox, etc or use a public S3 bucket to host the package in that case for use with the script. Tech Soft 3D currently does not provide public links to HOOPS Communicator packages. Be aware that both HOOPS Communicator reference applications rely on a certain version of HOOPS Communicator so you should only update if this version matches the package version.
 
-We have also provided a script to update the HOOPS Communicator demo to the latest version ``updateHCDemo.sh``. This script will download the latest version of the HOOPS Communicator demo from github and replace the existing version. Again, you should ensure that the updated version will work with the version of HOOPS Communicator that is currently installed.
+We have also provided a script to update the HOOPS Communicator demo to the latest version ``updateHCDemo.sh``. This script will download the latest version of the HOOPS Communicator demo from github and replace the existing version. Again, you should ensure that the updated version will work with the version of HOOPS Communicator that is currently installed. 
+
+Again, to ensure that the instance is not receiving any updates and stays in its original state make sure the two lines that update the node projects (``npm update ...``) are commented out and you do not run the ``updateHC.sh`` or the ``updateHCDemo.sh`` script which both need to be run manually.
 
 
-### Next Steps
+## Setting up a distributed environment
 The real power of CaaS is its ability to scale and run in a multi-region distributed environment, meaning you can run multiple instances of CaaS, each performing conversion or streaming all connected to each-other. In order to facilitate that two requirements will have to be met:
 * Each of the CaaS servers need to be connected to a common database instance
 * Each of the CaaS Servers need to be connected to a common file storage (e.g. S3 or Azure Blob Storage)
 
 In addition, it is obviously desirable to run the front-end via SSL. This is also very easy to do and we will cover it as well.
 
-### Connecting to a common database
+### Step 1: Connecting to a common database
 For convenience purposes, the AMI/Docker Image already comes with a preconfigured local MongoDB instance. However, this is not a good solution for a distributed environment. Instead, you should use a common MongoDB instance that is accessible from all your CaaS instances. The easiest way to do this is to use MongoDB Atlas. You can sign up for a free account [here](https://www.mongodb.com/cloud/atlas).  If you wan to setup your own mongoDB instance instead, that is also very straightforward wit many preconfigured mongoDB AMI's available. Dockerhub also has a mongoDB image available. In any case, once you have a separate mongoDB instance running, you need to configure CaaS to use it. This is done by editing the local.json file of CaaS. If you are using the AMI you will find it in the caasComplete/config/local.json. If you are using the Docker Image, you will find it in the folder you mounted to the docker container as described in the previous chapter. Look for the "mongoDBURI" entry and replace it with the URI of your mongoDB instance.  
 ```
 {
@@ -153,7 +155,7 @@ If you are running mongoDB separately, you should not run the built-in mongoDB i
 Make sure to restart the instance (sudo reboot) or the container for the changes to take affect.
 
 
-### Connecting to a common file store
+### Step 2: Connecting to a common file store
 The AMI/Docker Image is preconfigured for local file storage. However, this is not a good solution for a distributed environment. Instead, we will be using S3 as our common storage environment. Azure Blob Storage is also supported but we will not discuss it here. In order to use s3 the following steps are required:
 
 * Create an S3 bucket in your AWS account. Access should NOT be public
@@ -197,6 +199,47 @@ In the AMI you can also set them inside the startAll.sh script that starts CaaS 
 ```
 
 Make sure to restart the instance (sudo reboot) or the container for the changes to take effect.
+
+### Step 3: Deplying a separate conversion server
+Now that we have a common database and file storage, we can create a separate server that only deals with converting models. It is highly recommended to run CAD conversions separate from the streaming server, the modelManager and the webserver as converting a model can consume a lot of CPU resources and memory and starve other processes. It is also the component most likely to crash and by running it separately, you can ensure that the other components of CaaS are not affected. To deploy a conversion server you need to:
+
+* Follow the above steps to create a new EC2 instance from the AMI or run a new container on a separate machine from the Docker Image
+* Follow the above steps to set the environment variables for accessing S3 storage 
+* Open the local.json file (caasComplete/config/local.json) for the **new** instance in your editor of choice.
+* Edit the json file so that its content looks like the example below. Of course, you need to use the correct mongodb connection string here. Also the paths will look different for the docker image (/app/ instead of /home/ubuntu/). In addition, you need to specificy the correct s3 bucket. This configuration turns off the streaming server as well as the model manager on this machine and does not serve up the user management component and the demo websites.
+
+```
+{
+    "hc-caas": {
+      "mongodbURI": "mongodb://adminUser:ts3d@127.0.0.1:27017/conversions?authSource=admin",
+      "workingDirectory": "/home/ubuntu/tempData",
+      "runModelManager": false,
+      "runStreamingServer": false,
+      "runConversionServer": true,
+      "fullErrorReporting": true,
+      "serviceIP": "",
+      "licenseFile": "/home/ubuntu/communicatorLicense.txt",
+      "conversionServer": {
+        "name": "CaaS Conversion",
+        "converterpath": "/home/ubuntu/HOOPS_Communicator/authoring/converter/bin/linux64"
+      },
+      "localCache": {
+        "maxSize": 500
+      },
+      "storage": {
+        "type": "S3",
+        "destination": "mycaasfiles"
+      }
+    },
+    "startCaaS" : true,
+    "startUM" : false,
+    "startProxy" : false,
+    "serveHCDemoSite": false
+  }      
+```
+* In the config.json file of your **first** instance set "runConversionServer" to false in the json file and reboot the system (this ensures that conversions will only be performed on the second instance)
+* Reboot the second instance.
+* Navigate to the caas status page (http://ipofyourfirstinstance/caas_um_api/status) and make sure that the new conversion server is correctly registered.
 
 
 

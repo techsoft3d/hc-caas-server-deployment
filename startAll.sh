@@ -11,7 +11,7 @@ fi
 
 cd /app/caasComplete
 
-#npm update ts3d.hc.caas --save
-#npm update ts3d.hc.caas.usermanagement --save
+npm update ts3d.hc.caas --save
+npm update ts3d.hc.caas.usermanagement --save
 
 xvfb-run "--auto-servernum" "-s" "-screen 0 640x480x24" "$(which node)" proxyAll
