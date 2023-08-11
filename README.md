@@ -14,18 +14,18 @@ Docker Image: eric5544/caas_complete
 
 
 ## Introduction
-We have recently released CaaS, which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the User Management Component as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any backend that supports Docker.
+We have recently released CaaS, which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the User Management Component as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured Ubuntu Linux AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any backend that supports Docker.
 
 For questions/feedback please send an email to guido@techsoft3d.com or post in our [forum](https://forum.techsoft3d.com/). For a 60 day trial of the HOOPS Web Platform go to [Web Platform](https://www.techsoft3d.com/products/hoops/web-platform).
 
-**This library is not an officially supported part of HOOPS Communicator and provided as-is.**
+**The AMI and Docker Image are not an officially supported part of HOOPS Communicator and provided as-is.**
 
 
 ## What are you getting
 Using the prebuilt AMI or Docker image you get without any extra work:
 * A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node module or REST API. This includes token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming (or SCS) within your web-application.
 * A User Management node module with Hub and Project support, including a full front-end reference application which you can use as a starting point for your own development.
-* A "personal" version of demo.techsoftd.com
+* A "personal" version of demo.techsoft3d.com
 
 
 
@@ -59,7 +59,7 @@ This GitHub Project serves as the template for the AMI/Docker which contains all
   * US West (Oregon) us-west-2
   * Europe (Ireland) eu-west-1
   * Asia Pacific (Tokyo) ap-northeast-1  
-  * If you need to deploy CaaS in a different region and want to use the AMI simply create a new AMI from an EC2 instance in one of the above regions and then copy it to the region of your choice.
+  * If you need to deploy CaaS in a different region and want to use the AMI simply create a new CaaS AMI from an EC2 instance in one of the above regions and then copy it to the region of your choice.
 * Click on the "Launch Instance" button  
 <img src="readmeImages/launchInstance.png" alt="Alt text" width="600"/>
 * Under "Applications and OS Images select "Browse More AMI's"
@@ -102,7 +102,7 @@ To set the license you need to login to the instance and update the communicator
 
 #### Linux
 * Follow the instructions for your distribution from [here](https://docs.docker.com/engine/install/)
-* For Amazon linux specifically the following steps are required:  
+* For Amazon linux specifically the following steps should be sufficient to get docker installed:  
 ```
 sudo yum install -y docker
 sudo chkconfig docker on
@@ -110,10 +110,10 @@ sudo usermod -a -G docker ec2-user
 sudo reboot
 ```
 ### Step 2: Running the CaaS Docker Image
-* Pull the latest preview version of the CaaS docker image from docker hub:  
+* Pull the latest preview version of the CaaS Docker image from docker hub:  
 ``docker pull eric5544:caas_complete``
 * Create a new file called communicatorLicense.txt in your user directory and copy the HOOPS Communicator license key into it
-* Run the docker image:  
+* Run the docker image (make sure to map port 80 to port 80 on the host machine and mount the license file):  
 ``docker run -p 80:80 -v ${PWD}/communicatorLicense.txt:/app/communicatorLicense.txt eric5544/caas_complete``
 * The docker container will now start up and run CaaS which can be accessed as described in the next chapter. However all the data is ephemeral and will be lost when the docker container is stopped or the host machine is rebooted. To persist the data you need to mount two volumes to the docker container, one for all the upload and converted files and one for the mongoDB database. In order to do this:
 * create two directories on your host machine:  
@@ -121,39 +121,38 @@ sudo reboot
 mkdir tempData
 mkdir mongoData
 ```
-* Run the docker container again, this time also mounting the two directories:  
- ```docker run -p 80:80 -v ${PWD}/communicatorLicense.txt:/app/communicatorLicense.txt  -v ${PWD}/tempData:/app/tempData  -v ${PWD}/mongoData:/var/lib/mongodb eric5544/caas_complete```
+* Shutdown the currently running container ( `docker stop $(docker ps -aq)` )
+
 * In addition to those two directories, we will also mount the configuration file for CaaS so that we can make changes to it later. We start by copying the version contained in the currently running docker container to your local folder. (Alternatively you can also use the file in this github project called "caasComplete/config/docker.json")  
  ``docker cp <containerid>:/app/caasComplete/config/local.json ${PWD}/local.json``
-* Now stop the docker container and run it again, this time also mounting the local.json file in your user directory:  
+
+* Run the docker container again, this time also mounting the two directories and the configuration file:  
 ``docker run -p 80:80 -v ${PWD}/communicatorLicense.txt:/app/communicatorLicense.txt  -v ${PWD}/tempData:/app/tempData  -v ${PWD}/mongoData:/var/lib/mongodb -v ${PWD}/local.json:/app/caasComplete/config/local.json eric5544/caas_complete``  
 * After those steps the CaaS docker container will now persist its data and is locally configurable.
 
 
 ### Testing your new Instance of CAAS
 
-Caas should now be fully running in its basic configuration (either via the AMI or via Docker), meaning as a single machine performing streaming, CAD conversion as well as running the database backend and file storage. In addition, it runs a webserver serving up the two included reference applications. This is a good starting point for testing/development. We will get into more advanced configurations later. For now, lets test the instance. (If you are using CaaS locally via Docker, you can access the demo apps via localhost instead of the public IP address.
+Caas should now be fully running in its basic configuration (either via the AMI or via Docker), meaning as a single machine performing streaming, CAD conversion as well as running the database backend and file storage. In addition, the machine runs a webserver serving up the two included reference applications. This is a good starting point for testing/development. We will get into more advanced configurations later. For now, lets test the instance. (If you are using CaaS locally via Docker, you can access the demo apps via localhost instead of the public IP address)
 
 * We already mentioned the status page for the instance in Step 1 which can be accessed with the public IP address of the instance followed by "caas_um_api/status". For example: http://3.87.229.101/caas_um_api/status. This page contains the status for all conversion and streaming servers. It also retrieves the version of CaaS as well as the up-time for the instance. It will also show a list of all converted and streamed models.
-* Next let's navigate to the demo page by using the public ip of your instance followed by /demo.techsoft3d.com. (Example: http://3.87.229.101/demo.techsoft3d.com/). This page is an exact copy of the demo page on our [website](https://demo.techsoft3d.com/) without the sample files. The only difference is that it is served up by your instance and uses its own CaaS backend. This means that you can now test your own models on this page. Simply upload them and they will be converted and streamed by your instance. Please note that the demo is designed to automatically create a fresh project when it is accessed from different browsers. It will also delete projects after they haven't been accessed for 24 hours. In addition any restart of the server will also reset existing projects.
+* Next let's navigate to the demo page by using the public ip of your instance followed by /demo.techsoft3d.com. (Example: http://3.87.229.101/demo.techsoft3d.com/). This page is an exact copy of the demo page on our [website](https://demo.techsoft3d.com/) without the sample files. The only difference is that it is served up by your instance and uses its own CaaS backend. This means that you can now test your own models on this page with no connection to Tech Soft 3D's servers. Simply upload them and they will be converted and streamed by your instance. Please note that the demo is designed to automatically create a fresh project when it is accessed from different browsers. It will also delete projects after they haven't been accessed for 24 hours. In addition any restart of the server will also reset existing projects. Feel free to modify the source code of the demo to change this behavior or make other changes.
 * The initial configuration of the AMI/Docker Image also serves up a more advanced reference application with full account handling and support for Hubs and Projects with fine grain control of access rights for each user. To access this application, navigate to the public ip of your instance followed by /um_app (Example: http://3.87.229.101/um_app). Start by registering a new user to the system. The rest should be self explanatory.
 
 ## Administering your Instance of CaaS
 The AMI is configured to run with PM2 which automatically restarts the server in case of a crash. It also auto-restarts CaaS on reboot. If you want to stop caas manually you can do so by running the following command:  
-``pm2 stop`` 
-You can then manually start it in the foreground by running the ``./startAll.sh`` script, however you should only do this for debugging purposes. 
+``pm2 stop``   
+You can then manually start CaaS in the foreground by running the ``./startAll.sh`` script, however you should only do this for debugging purposes as this will not restart CaaS in case of a crash. 
 
 All console messages (error and regular messages) are logged and available in the `.pm2/logs` folder. 
 
-If you make any changes to the configuration, Caas needs to be restarted for those changes to take effect. The easiest way to do this is by simply rebooting the instance with ``sudo reboot``.
+If you make any changes to the configuration, Caas needs to be restarted for those changes to take effect. The easiest way to do this is by simply rebooting the instance with ``sudo reboot``. On every restart the node packages of CaaS will be updated to the latest minor version. If you want to prevent this, you can comment out the releveant lines in ``startAll.sh``
 
-On every restart the node packages of CaaS will be updated to the latest minor version. If you want to prevent this, you can comment out the releveant lines in ``startAll.sh``
+The AMI/Docker Image comes with a current version of HOOPS Communicator (see release notes on top of this page for the version used). If you want to update it to the latest version, you can do so by either manually replacing the content of the HOOPS Communicator linux package in the HOOPS_Communicator folder or by running the ``updateHC.sh`` script. This script will look for a package of HOOPS Communicator at the public URL specified in the first line of the script. You can use a service like dropbox, etc or use a public S3 bucket to host the package in that case for use with the script. Tech Soft 3D currently does not provide public links to HOOPS Communicator packages. Be aware that both HOOPS Communicator reference applications are built with a specific versionof HOOPS Communicator that needs to match the HOOPS Communicator package used, so you should only update if this version matches the package version.
 
-The AMI/Docker Image comes with a version of HOOPS Communicator (see release notes on top of this page for the current version). If you want to update it to the latest version, you can do so by either manually replacing the content of the HOOPS Communicator linux package in the HOOPS_Communicator folder or by running the ``updateHC.sh`` script. This script will look for a package of HOOPS Communicator at the public URL specified in the first line of the script. You can use a service like dropbox, etc or use a public S3 bucket to host the package in that case for use with the script. Tech Soft 3D currently does not provide public links to HOOPS Communicator packages. Be aware that both HOOPS Communicator reference applications rely on a certain version of HOOPS Communicator so you should only update if this version matches the package version.
+We have also provided a script to update the HOOPS Communicator demo to the latest version called ``updateHCDemo.sh``. This script will download the latest version of the HOOPS Communicator demo from github and replace the existing version. Once again, you should ensure that the updated version will work with the version of HOOPS Communicator that is currently installed. 
 
-We have also provided a script to update the HOOPS Communicator demo to the latest version ``updateHCDemo.sh``. This script will download the latest version of the HOOPS Communicator demo from github and replace the existing version. Again, you should ensure that the updated version will work with the version of HOOPS Communicator that is currently installed. 
-
-Again, to ensure that the instance is not receiving any updates and stays in its original state make sure the two lines that update the node projects (``npm update ...``) are commented out and you do not run the ``updateHC.sh`` or the ``updateHCDemo.sh`` script which both need to be run manually.
+Just to be clear again, to ensure that the instance is not receiving any updates and stays in its original state make sure the two lines that update the node projects (``npm update ...``) are commented out and  do not run the ``updateHC.sh`` or the ``updateHCDemo.sh`` script which both are only run manually.
 
 
 ## Setting up a distributed environment
@@ -276,5 +275,49 @@ Now that we have a common database and file storage, we can create a separate se
 
 
 ## Using SSL
+
+If you are using a proxy like nginx, you will most likely handle your own SSL certificates. In that case you can skip the first part of this chapter. 
+
+### Setting up the SSL certificates
+
+* Generate/locate your SSL certificates. You will need a certificate file and a key file. 
+* Setup your domain name to point to your instance. If you are using AWS, you can use Route 53 to do that. 
+* Place your certificate and key file in the `cert` folder of your instance (though any other location is also ok). In case of docker make sure to mount this folder to the container.
+* Open the local.json file and point  `keyPath` and `certPath` in the `ssl` category to your certificate and key-file
+```
+ "ssl": {
+    "keyPath":"/home/ubuntu/cert/mykey.key",
+    "certPath":"/home/ubuntu/cert/e49c8b6306111d3e.crt"
+  },
+```
+
+### Setting up the public URL
+* Specifiy the public url for the streaming server in the `streamingServer` category. This is needed so that the streaming server can generate the correct websocket url for the client. 
+```
+  "streamingServer": {
+      "name": "CaaS Streaming US",     
+      "scserverpath": "/home/ubuntu/HOOPS_Communicator/server/bin/linux64",
+      "publicURL": "wss://my.public.url:443",    
+    },
+```    
+* Use your public url for the CaaS-UM in the `hc-caas-um` category. If your CaaS instance is just performing conversions then neither the streamingServer setup nor setting the publicURL is necessary.
+```
+     "hc-caas-um": {
+    "mongodbURI": "mongodb://myUserAdmin:abc123@54.67.101.212:27017/caas_demo_a>
+    "demoProject":"648f234d48418720ce36e878",
+    "publicURL": "https://caas.techsoft3d.com:443",
+    "useStreaming": true,
+    "useDirectFetch": true,
+    "demoUser": "demo@techsoft3d.com",
+    "demoUserPassword": "demo",
+    "demoUserHUB": "demo"
+  },
+```
+* Restart the instance or the container for the changes to take effect.
+
+For Docker, make sure to replace the paths (/home/ubuntu/...) with (/app/...) in the above snippets.
+
+
+
 
 
