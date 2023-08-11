@@ -1,25 +1,19 @@
 # Deploy a fully scalable backend for HOOPS Commmunicator via an AMI or Docker in less than 20 minutes
 
-
-
-
 ## Version Update (0.3.0) 
 * Initial Release
 * Based on HOOPS Communiator 2023 SP2
-
 
 ## Quick Access to latest version:
 AMI: 	caas-ubuntu-0.3.0-public (available in us-east-1, us-west-2, eu-west-1, ap-northeast-1)  
 Docker Image: eric5544/caas_complete
 
-
 ## Introduction
-We have recently released CaaS, which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the User Management Component as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured Ubuntu Linux AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any backend that supports Docker.
+We have recently released [CaaS](https://forum.techsoft3d.com/t/conversion-and-streaming-backend-for-hoops-communicator/1314), which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the [User Management Component](https://forum.techsoft3d.com/t/user-management-library-for-caas-released/1535) as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured Ubuntu Linux AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any backend that supports Docker.
 
 For questions/feedback please send an email to guido@techsoft3d.com or post in our [forum](https://forum.techsoft3d.com/). For a 60 day trial of the HOOPS Web Platform go to [Web Platform](https://www.techsoft3d.com/products/hoops/web-platform).
 
 **The AMI and Docker Image are not an officially supported part of HOOPS Communicator and provided as-is.**
-
 
 ## What are you getting
 Using the prebuilt AMI or Docker image you get without any extra work:
@@ -32,10 +26,9 @@ Using the prebuilt AMI or Docker image you get without any extra work:
 ## How to use this Github Project?
 **There is no need to use to use this project directly unless you want to build your own AMI or Docker Image manually. Simply follow the instructions below (starting with [Prerequisites](#prerequisites)) to use the prebuild AMI or Docker Image instead.**  
 This GitHub Project serves as the template for the AMI/Docker which contains all the necessary files to build an AWS AMI (or similar on Azure, etc.) with CaaS or an equivalent Docker Image.
-* If you are creating an AMI, simply checkout this project into your main user folder. Depending on which version of linux you are using, you might need to make changes to the config file paths. You also of course need to make sure that all necessarily libraries and dependencies for CaaS and HOOPS Communicator itself are installed.
+* If you are creating an AMI, simply checkout this project into your main user folder. Depending on which version of linux you are using, you might need to make changes to the config file paths. You also need to make sure that all necessarily libraries and dependencies for CaaS and HOOPS Communicator itself are installed. See the [HOOPS Communicator Documentation](https://docs.techsoft3d.com/communicator/latest/overview/supported-platforms.html) for more information.
 
-* If you are building the docker image (from the provided Dockerfile), make sure that updateHC.sh points to a valid HOOPS package. If you want to include the HOOPS demo into the docker image, also make sure to run the updateHCDemo.sh script to ensure that the demo project is in the right place.
-
+* If you are building the docker image from the provided Dockerfile, make sure that updateHC.sh points to a valid HOOPS package. If you want to include the HOOPS demo into the docker image, also make sure to run the updateHCDemo.sh script to ensure that the demo project is in the right place.
 
 ## Prerequisites
 
@@ -319,5 +312,15 @@ For Docker, make sure to replace the paths (/home/ubuntu/...) with (/app/...) in
 
 
 
+## Questions
+
+### How about SSR (Server Side Rendering)?
+Server Side Rendering is of course an important feature of HOOPS Communicator and fully supported by CaaS. However, neither the AMI nor the Docker image are configured for SSR which has additional driver requirements and of course requires an instance with GPU support. If you want to use SSR I suggest you manually configure your instance from this github project. In my expereience the setup is easier with a windows instance.
 
 
+### Better Documentation
+The documentation for CaaS can and will be improved though it should be adequate to get started. I also suggest looking at the source code for the two reference applications to get a better understanding of the API.
+
+
+### Automatic Scaling
+You can easily built automatic scaling on top of CaaS by simply spinning up more instances (usually for CAD conversion where scaling is most relevant) as needed using Beanstock, Kubernetes, etc. We will provide more information on this in the future.
