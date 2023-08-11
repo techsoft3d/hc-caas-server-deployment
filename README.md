@@ -1,6 +1,18 @@
 # Deploy a fully scalable backend for HOOPS Commmunicator via an AMI or Docker in less than 20 minutes
 
 
+
+
+## Version Update (0.3.0) 
+* Initial Release
+* Based on HOOPS Communiator 2023 SP2
+
+
+## Quick Access to latest version:
+AMI: 	caas-ubuntu-0.3.0-public (available in us-east-1, us-west-2, eu-west-1, ap-northeast-1)  
+Docker Image: eric5544/caas_complete
+
+
 ## Introduction
 We have recently released CaaS, which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the User Management Component as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any backend that supports Docker.
 
@@ -9,6 +21,12 @@ We have recently released CaaS, which is a fully scalable conversion, streaming 
 Using the AMI or Docker image you get without any extra work:
 * A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node module or REST API. This includes token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming within your web-application.
 * A User Management node module with Hub and Project support, including a full front-end reference application which you can use as a starting point for your own development.
+
+
+## How to use this Github Project?
+**There is no need to use to use this project directly unless you want to build your own AMI or Docker Image manually. Simply follow the instructions below to use the prebuild AMI's or Docker Images instead.**  
+The GitHub Project is the template for the AMI/Docker Image which contains all the necessary files to build the AMI and Docker Image.
+If you are building the docker image from the provided dockerfile, make sure that updateHC.sh points to a valid HOOPS package. If you want to include the HOOPS demo into the docker image, also make sure to run the updateHCDemo.sh script to ensure that the demo project is in the right place.
 
 
 ## Prerequisites
@@ -117,11 +135,13 @@ The AMI is configured to run with PM2 which automatically restarts the server in
 ``pm2 stop`` 
 You can then manually start it in the foreground by running the ``./startAll.sh`` script, however you should only do this for debugging purposes. 
 
+All console messages (error and regular messages) are logged and available in the `.pm2/logs` folder. 
+
 If you make any changes to the configuration, Caas needs to be restarted for those changes to take effect. The easiest way to do this is by simply rebooting the instance with ``sudo reboot``.
 
 On every restart the node packages of CaaS will be updated to the latest minor version. If you want to prevent this, you can comment out the releveant lines in ``startAll.sh``
 
-The AMI/Docker Image comes with a version of HOOPS Communicator. If you want to update it to the latest version, you can do so by either manually replacing the content of the HOOPS Communicator linux package in the HOOPS_Communicator folder or by running the ``updateHC.sh`` script. This script will look for a package of HOOPS Communicator at the public URL specified in the first line of the script. You can use a service like dropbox, etc or use a public S3 bucket to host the package in that case for use with the script. Tech Soft 3D currently does not provide public links to HOOPS Communicator packages. Be aware that both HOOPS Communicator reference applications rely on a certain version of HOOPS Communicator so you should only update if this version matches the package version.
+The AMI/Docker Image comes with a version of HOOPS Communicator (see release notes on top of this page for the current version). If you want to update it to the latest version, you can do so by either manually replacing the content of the HOOPS Communicator linux package in the HOOPS_Communicator folder or by running the ``updateHC.sh`` script. This script will look for a package of HOOPS Communicator at the public URL specified in the first line of the script. You can use a service like dropbox, etc or use a public S3 bucket to host the package in that case for use with the script. Tech Soft 3D currently does not provide public links to HOOPS Communicator packages. Be aware that both HOOPS Communicator reference applications rely on a certain version of HOOPS Communicator so you should only update if this version matches the package version.
 
 We have also provided a script to update the HOOPS Communicator demo to the latest version ``updateHCDemo.sh``. This script will download the latest version of the HOOPS Communicator demo from github and replace the existing version. Again, you should ensure that the updated version will work with the version of HOOPS Communicator that is currently installed. 
 
@@ -204,9 +224,14 @@ Make sure to restart the instance (sudo reboot) or the container for the changes
 Now that we have a common database and file storage, we can create a separate server that only deals with converting models. It is highly recommended to run CAD conversions separate from the streaming server, the modelManager and the webserver as converting a model can consume a lot of CPU resources and memory and starve other processes. It is also the component most likely to crash and by running it separately, you can ensure that the other components of CaaS are not affected. To deploy a conversion server you need to:
 
 * Follow the above steps to create a new EC2 instance from the AMI or run a new container on a separate machine from the Docker Image
-* Follow the above steps to set the environment variables for accessing S3 storage 
+* Make sure that your HOOPS Communicator license is set
+* Set the environment variables for accessing S3 storage 
 * Open the local.json file (caasComplete/config/local.json) for the **new** instance in your editor of choice.
-* Edit the json file so that its content looks like the example below. Of course, you need to use the correct mongodb connection string here. Also the paths will look different for the docker image (/app/ instead of /home/ubuntu/). In addition, you need to specificy the correct s3 bucket. This configuration turns off the streaming server as well as the model manager on this machine and does not serve up the user management component and the demo websites.
+* Edit the json file so that its content looks like the example below. That means:
+  * Setting the mongodbURI correctly so that it points to a common mongoDB instance. If you are using the first instace as your mongoDB instance, you will need to use the ip of that instance (instead of 127.0.0.1) in the connection string and open port 27017 on the first instance.
+  * Use S3 storage as described above, pointing to the same bucket you used in the first instance
+  * Turn off the streaming server and the model manager on this instance and do not serve up the user management component and the demo websites as this instance should used be used for CAD conversion.
+  * In the case of docker make sure to replace the paths (/home/ubuntu/...) with (/app/...)
 
 ```
 {
@@ -239,8 +264,9 @@ Now that we have a common database and file storage, we can create a separate se
 ```
 * In the config.json file of your **first** instance set "runConversionServer" to false in the json file and reboot the system (this ensures that conversions will only be performed on the second instance)
 * Reboot the second instance.
-* Navigate to the caas status page (http://ipofyourfirstinstance/caas_um_api/status) and make sure that the new conversion server is correctly registered.
+* Navigate to the caas status page (http://ipofyourfirstinstance/caas_um_api/status) and make sure that the new conversion server is correctly registered. If you had the conversion server running before on the first instance it will still show up in the list but with an "Offline" status. That is expected. It will be removed from the list after 24 hours.
 
 
+## Using SSL
 
 
