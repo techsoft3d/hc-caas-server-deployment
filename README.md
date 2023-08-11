@@ -16,17 +16,25 @@ Docker Image: eric5544/caas_complete
 ## Introduction
 We have recently released CaaS, which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the User Management Component as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any backend that supports Docker.
 
+For questions/feedback please send an email to guido@techsoft3d.com or post in our [forum](https://forum.techsoft3d.com/). For a 60 day trial of the HOOPS Web Platform go to [Web Platform](https://www.techsoft3d.com/products/hoops/web-platform).
+
+**This library is not an officially supported part of HOOPS Communicator and provided as-is.**
+
 
 ## What are you getting
-Using the AMI or Docker image you get without any extra work:
-* A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node module or REST API. This includes token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming within your web-application.
+Using the prebuilt AMI or Docker image you get without any extra work:
+* A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node module or REST API. This includes token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming (or SCS) within your web-application.
 * A User Management node module with Hub and Project support, including a full front-end reference application which you can use as a starting point for your own development.
+* A "personal" version of demo.techsoftd.com
+
 
 
 ## How to use this Github Project?
-**There is no need to use to use this project directly unless you want to build your own AMI or Docker Image manually. Simply follow the instructions below to use the prebuild AMI's or Docker Images instead.**  
-The GitHub Project is the template for the AMI/Docker Image which contains all the necessary files to build the AMI and Docker Image.
-If you are building the docker image from the provided dockerfile, make sure that updateHC.sh points to a valid HOOPS package. If you want to include the HOOPS demo into the docker image, also make sure to run the updateHCDemo.sh script to ensure that the demo project is in the right place.
+**There is no need to use to use this project directly unless you want to build your own AMI or Docker Image manually. Simply follow the instructions below (starting with [Prerequisites](#prerequisites)) to use the prebuild AMI or Docker Image instead.**  
+This GitHub Project serves as the template for the AMI/Docker which contains all the necessary files to build an AWS AMI (or similar on Azure, etc.) with CaaS or an equivalent Docker Image.
+* If you are creating an AMI, simply checkout this project into your main user folder. Depending on which version of linux you are using, you might need to make changes to the config file paths. You also of course need to make sure that all necessarily libraries and dependencies for CaaS and HOOPS Communicator itself are installed.
+
+* If you are building the docker image (from the provided Dockerfile), make sure that updateHC.sh points to a valid HOOPS package. If you want to include the HOOPS demo into the docker image, also make sure to run the updateHCDemo.sh script to ensure that the demo project is in the right place.
 
 
 ## Prerequisites
@@ -70,7 +78,7 @@ If you are building the docker image from the provided dockerfile, make sure tha
 ### Step 2: Setting your HOOPS Communicator License Key
 Without the license key, neither the streaming nor the file conversion will work. If you are a partner you will find your license key at our [developer portal](https://developer.techsoft3d.com/). If you are evaluating HOOPS Communicator, you find the evaluation key on your account page in our [manage portal](https://manage.techsoft3d.com/). Its also inside the evaluation package in quick_start/server_config.js (at the bottom of the file).  
   
-To set the license you need to login to the instance and update the communicatorLicense.txt file. The best way to do this is either to use Putty or a utility like FileZilla.  You will definitely need to login to the instance for any further configuration so I recommend setting up Putty right now, which should be very straightforward:
+To set the license you need to login to the instance and update the communicatorLicense.txt file. The best way to do this (on windows) is either to use Putty or a utility like FileZilla. You will definitely need to login to the instance for any further configuration so I recommend setting up Putty right now, which should be very straightforward. If you are on linux or mac, feel free to use the ssh client of your choice and skip the Putty setup.
 
 * Download Putty from [here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
 * Start Putty and use the following format to define the username for the instance ( ubuntu@public_IP_address_of_the_instance ). In addition choose SSH as the protocol and Port 22.  
@@ -80,9 +88,9 @@ To set the license you need to login to the instance and update the communicator
 * Save the configuration and click on "Open". This will open a terminal window. You should now be connected to the instance.
 * Open the communicatorLicense.txt file in a text editor:  
 ``nano communicatorLicense.txt``
-* Copy your license key (without quotes) into this file and save it.
+* Copy your license key (without quotes) into this file and save it. (on windows you can copy and paste by right clicking into the terminal window)
 
-**You can skip the next chapter and go right to "Testing your new Instance of CaaS" if you are not interested in the Docker based deployment**
+**You can skip the next chapter and go right to [Testing your new Instance of CaaS](#testing-your-new-instance-of-caas) if you are not interested in the Docker based deployment**
 
 ## Getting Started with Docker
 
