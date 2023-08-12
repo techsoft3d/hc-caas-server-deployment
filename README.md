@@ -19,7 +19,7 @@ For questions/feedback please send an email to guido@techsoft3d.com or post in o
 
 ## What are you getting
 Using the prebuilt AMI or Docker image you get without any extra work:
-* A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node library or REST API. This includes token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming (or SCS) within your web-application for a large number of users. 
+* A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node library or REST API. This includes queue based cad conversion, token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming (or SCS) within your web-application for a large number of users. 
 * A User Management node module with Session as well as Hub and Project support, including a full front-end reference application which you can use as a starting point for your own development.
 * A "personal" version of demo.techsoft3d.com
 
@@ -245,7 +245,8 @@ In the AMI you can also set them inside the startAll.sh script that starts CaaS 
 Make sure to restart the instance (sudo reboot) or the container for the changes to take effect.
 
 ### Step 3: Deplying a separate conversion server
-Now that we have a common database and file storage, we can create a separate server that only deals with converting models. It is highly recommended to run CAD conversions separate from the streaming server, the modelManager and the webserver as converting a model can consume a lot of CPU resources and memory and starve other processes. It is also the component most likely to crash and by running it separately, you can ensure that the other components of CaaS are not affected. To deploy a conversion server you need to:
+Now that we have a common database and file storage, we can create a separate server that only deals with converting models. It is highly recommended to run CAD conversions separate from the streaming server, the modelManager and the webserver as converting a model can consume a lot of CPU resources and memory and starve other processes. It is also the component most likely to crash and by running it separately, you can ensure that the other components of CaaS are not affected. In general a production-grade conversion instance should have ample memory and adequate CPU capacity.    
+To deploy a conversion server you need to:
 
 * Follow the above steps to create a new EC2 instance from the AMI or run a new container on a separate machine from the Docker Image
 * Make sure that your HOOPS Communicator license is set
