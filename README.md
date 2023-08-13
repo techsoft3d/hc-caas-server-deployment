@@ -7,8 +7,8 @@
   * User Management Version 0.6.x
 
 ## Quick Access to latest version:
-AMI: 	caas-ubuntu-0.3.0-public (available in us-east-1 / N. Virginia)
-Docker Image: eric5544/caas:0.3.0
+**AMI: 	caas-ubuntu-0.3.0-public (available in us-east-1 / N. Virginia)  
+Docker Image: eric5544/caas:0.3.0**
 
 ## Introduction
 We have recently released [CaaS](https://forum.techsoft3d.com/t/conversion-and-streaming-backend-for-hoops-communicator/1314), which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the [User Management Component](https://forum.techsoft3d.com/t/user-management-library-for-caas-released/1535) as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured Ubuntu Linux AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any machine that supports Docker.
