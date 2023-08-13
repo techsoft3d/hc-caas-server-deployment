@@ -150,7 +150,7 @@ const caasClient = require('ts3d.hc.caas.api');
 ```
   * Run the app.js file  
 ``node app.js``
-  * The app will upload the model, wait until it is converted and then download the SCS file to the output folder. You can now use this SCS file to load the model into the HOOPS Communicator viewer. This example obviously just scratches the surface of what is possible with the API. For more information on the API, please refer to the [CaaS Documentation](https://github.com/techsoft3d/hc-caas) and the source code of the two reference applications.
+  * The app will upload the model, wait until it is converted and then download the SCS file to the output folder. You can now use this SCS file to load the model into the HOOPS Communicator viewer. This example obviously just scratches the surface of what is possible with the API. For more information on the REST API, please refer to the [CaaS Documentation](https://github.com/techsoft3d/hc-caas) and the source code of the two reference applications. The GitHub project for the API itself with more usage examples can be found [here](https://github.com/techsoft3d/hc-caas-api) (documentation to come).
 
 
 
