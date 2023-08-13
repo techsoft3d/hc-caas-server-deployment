@@ -19,16 +19,16 @@ For questions/feedback please send an email to guido@techsoft3d.com or post in o
 
 ## What are you getting
 Using the prebuilt AMI or Docker image you get without any extra work:
-* A full scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node library or REST API. This includes queue based cad conversion, token based access control and account management. It means that with a few lines of code you can convert CAD files and make them accessible for streaming (or SCS) within your web-application for a large number of users. 
+* A fully scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node library or REST API. This includes queue based cad conversion, token based access control and account management. That means that with a few lines of code you can convert CAD files and make them accessible for streaming (or SCS) within your web-application for a large number of users. 
 * A User Management node module with Session as well as Hub and Project support, including a full front-end reference application which you can use as a starting point for your own development.
-* A "personal" version of demo.techsoft3d.com
+* A "personal" version of the demo found at [demo.techsoft3d.com](https://demo.techsoft3d.com/).
 
 ## How to use this Github Project?
 **There is no need to use to use this project directly unless you want to build your own AMI or Docker Image manually. Simply follow the instructions below (starting with [Prerequisites](#prerequisites)) to use the prebuild AMI or Docker Image instead.**  
 This GitHub Project serves as the template for the AMI/Docker which contains most of the necessary files to build an AWS AMI (or similar on Azure, etc.) with CaaS or an equivalent Docker Image.
 * If you are creating an AMI, simply checkout this project into the user folder of your instance (e.g. `home/ubuntu`). Depending on which version of linux you are using, you might need to make changes to the config file paths. You also need to make sure that all necessarily libraries and dependencies for CaaS and HOOPS Communicator itself are installed. See the [HOOPS Communicator Documentation](https://docs.techsoft3d.com/communicator/latest/overview/supported-platforms.html) for more information.
 
-* If you are building the docker image from the provided Dockerfile, make sure that updateHC.sh points to a valid HOOPS package. If you want to include the HOOPS demo into the docker image, also make sure to run the updateHCDemo.sh script to ensure that the demo project is in the right place before you build the image.
+* If you are building the docker image from the provided Dockerfile, make sure that updateHC.sh points to a valid HOOPS Communicator Linux package. If you want to include the HOOPS demo into the docker image, also make sure to run the updateHCDemo.sh script to ensure that the demo project is in the right place before you build the image.
 
 ## Prerequisites
 
