@@ -332,17 +332,16 @@ If you are using a proxy like nginx, you will most likely handle your SSL certif
 
 For Docker, make sure to replace the paths (/home/ubuntu/...) with (/app/...) in the above snippets.
 
-
-
 ## Questions
+
+### How does the Conversion Queue of CaaS work?
+Each request for a CAD Conversion is put on a queue which is then processed by the conversion servers connected to the modelManagement component of CaaS in the order they were received. By default each server can perform 4 cad conversions concurrently. As a load balancing measure, the conversion server with the least amount of running conversions will be selected for a new conversion. In addition, it is possible to copy conversion results to different regions as well as prioritize one conversion server over another based on additional heuristics. We are currently working on updated documentation that will provide more detail.
 
 ### How about SSR (Server Side Rendering)?
 Server Side Rendering is of course an important feature of HOOPS Communicator and fully supported by CaaS. However, neither the AMI nor the Docker image are configured for SSR which has additional driver requirements and of course requires an instance with GPU support. If you want to use SSR I suggest you manually configure your instance from this github project. In my experience the setup is easier with a windows instance. We might provide a preconfigured AMI for CaaS/Docker in the future.
 
-
 ### Better Documentation
 The documentation for CaaS can and will be improved though it should be adequate to get started. I also suggest looking at the source code for the two reference applications to get a better understanding of the API.
 
-
 ### Automatic Scaling
-You can easily built automatic scaling on top of CaaS by simply spinning up more instances (usually for CAD conversion where scaling is most relevant) as needed using Beanstock, Kubernetes, etc. We will provide more information on this in the future.
+You can easily built automatic scaling on top of CaaS by simply spinning up more instances (usually for CAD conversion where scaling is most relevant) as needed using Beanstock, Kubernetes, etc. We will provide more information on this and how to query the current load of CaaS in the future.
