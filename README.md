@@ -4,7 +4,7 @@
 * Based on:
   * HOOPS Communiator 2023 SP2
   * CaaS Version 0.10.x
-  * User Management Version 0.6.x
+  * CaaS User Management Version 0.6.x
 
 ## Quick Access to latest version:
 **AMI: 	caas-ubuntu-0.3.0-public (available in us-east-1 / N. Virginia)  
@@ -19,7 +19,7 @@ For questions/feedback please send an email to guido@techsoft3d.com or post in o
 
 ## What are you getting
 Using the prebuilt AMI or Docker image you get without any extra work:
-* A fully scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node library or REST API. This includes queue based cad conversion, token based access control and account management. That means that with a few lines of code you can convert CAD files and make them accessible for streaming (or SCS) within your web-application for a large number of users. 
+* A fully scalable conversion and streaming backend for HOOPS Communicator you can access server-side via a node library or REST API. This includes queue based CAD conversion, token based access control and account management. That means that with a few lines of code you can convert any models supported by [HOOPS Exchange](https://www.techsoft3d.com/products/hoops/exchange) and make them accessible for streaming or stateless via SCS within your web-application for a large number of users. 
 * A User Management node module with Session as well as Hub and Project support, including a full front-end reference application which you can use as a starting point for your own development.
 * A "personal" version of the demo found at [demo.techsoft3d.com](https://demo.techsoft3d.com/).
 
@@ -320,7 +320,7 @@ If you are using a proxy like nginx, you will most likely handle your SSL certif
 ```    
 * Use your public url for the CaaS-UM in the `hc-caas-um` category. If your CaaS instance is just performing conversions then neither the streamingServer setup nor setting the publicURL is necessary.
 ```
-     "hc-caas-um": {
+  "hc-caas-um": {
     "mongodbURI": "mongodb://myUserAdmin:abc123@54.67.101.212:27017/caas_demo_a>   
     "publicURL": "https://caas.techsoft3d.com:443",
     "useStreaming": true,   
