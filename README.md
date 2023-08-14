@@ -58,10 +58,10 @@ This GitHub Project serves as the template for the AMI/Docker which contains mos
 * Under "Applications and OS Images select "Browse More AMI's"
 * Click on Community AMI's, search for "caas". The current AMI name is "caas-ubuntu-0.3.0-public"  
 <img src="readmeImages/selectAMI.png" alt="Alt text" width="900"/>  
-* Select the instance type. We recommend at least a t2.medium instance so there is enough memory for the conversion process.
+* Select the instance type. We recommend at least a t2.medium instance so there is enough memory for the conversion process.  
 * Create a new keypair or select an existing key-pair for this instance. As this will be a linux instance, the recommended way is to use RSA key-pairs with the .ppk format for use with Putty later.  
 <img src="readmeImages/keypair.png" alt="Alt text" width="600"/>  
-* Click on "Edit Network Settings and ensure that Auto-assign Public IP is set to "Enable"
+* Click on "Edit Network Settings and ensure that Auto-assign Public IP is set to "Enable"  
 * Create a new security group or choose an existing one. For initial testing only the SSH Port 22 as well as Port 80 needs to be open. However, to run CaaS as part of a scalable backened you also need to open port 3001.  
 <img src="readmeImages/ports.png" alt="Alt text" width="900"/>  
 * Launch the instance and wait for it to start up. This can take a few minutes.
@@ -78,7 +78,7 @@ To set the license you need to login to the instance and update the communicator
 <img src="readmeImages/putty1.png" alt="Alt text" width="600"/>
 * Navigate to Connection->SSH->Auth->Credentials and select the .ppk file that you created when you launched the instance.  
 <img src="readmeImages/putty2.png" alt="Alt text" width="600"/>
-* Save the configuration and click on "Open". This will open a terminal window. You should now be connected to the instance.
+* Save the configuration and click on "Open". This will open a terminal window. You should now be connected to the instance.  
 * Open the communicatorLicense.txt file in a text editor:  
 ``nano communicatorLicense.txt``
 * Copy your license key (without quotes) into this file and save it. (on windows you can copy and paste by right clicking into the terminal window)
