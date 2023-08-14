@@ -141,7 +141,6 @@ CaaS should now be fully running in its basic configuration (either via the AMI 
 const caasClient = require('ts3d.hc.caas.api');
 
 (async () => {
-
     caasClient.init('http://localhost:3001');
     let info = await caasClient.uploadModelFromFile("./testfiles/bnc.hsf"); //pick a CAD file from your local hard drive here
     await caasClient.waitUntilConverted(info.itemid);
@@ -180,7 +179,12 @@ The real power of CaaS is its ability to scale and run in a multi-region distrib
 In addition, it is obviously desirable to run the front-end via SSL so that all communication is secure. This is also very easy to achieve and we will cover it as well.
 
 ### Step 1: Connecting to a common database
-For convenience purposes, the AMI/Docker Image already comes with a preconfigured local MongoDB instance. However, this is not a good solution for a distributed environment. Instead, you should use a common MongoDB instance that is accessible from all your CaaS instances. The easiest way to do this is to use MongoDB Atlas. You can sign up for a free account [here](https://www.mongodb.com/cloud/atlas).  If you wan to setup your own mongoDB instance instead, that is also very straightforward with many preconfigured mongoDB AMI's available. Dockerhub also has a mongoDB image available. In any case, once you have a separate mongoDB instance running, you need to configure CaaS to use it. This is done by editing the local.json file of CaaS. If you are using the AMI you will find it in the caasComplete/config/local.json. If you are using the Docker Image, you will find it in the folder you mounted to the docker container as described in the previous chapter. Look for the "mongodbURI" entry and replace it with the URI of your mongoDB instance.  
+For convenience purposes, the AMI/Docker Image already comes with a preconfigured local MongoDB instance. However, this is not a good solution for a distributed environment. Instead, you should use a common MongoDB instance that is accessible from all your CaaS instances. The easiest way to do this is to use MongoDB Atlas. You can sign up for a free account [here](https://www.mongodb.com/cloud/atlas).  If you wan to setup your own mongoDB instance instead, that is also very straightforward with many preconfigured mongoDB AMI's available. Dockerhub also has a mongoDB image available. 
+
+If you are using the AMI, you will notice that mongodb is already preconfigured with an administrator user so access to mongoDB is already somewhat secure. This means that for testing purposes you can use one of the CaaS instances as your database instance as well. In that case, all you have to do is open the mongoDB port (27017) in the security group of your instance to make the database accessible from the other instances. However, this is not recommended for production environments. At the very least you should change the password for the admin user.
+
+Once you have a separate mongoDB instance running, you need to configure CaaS to use it. This is done by editing the local.json file of CaaS. If you are using the AMI you will find it in the caasComplete/config/local.json. If you are using the Docker Image, you will find it in the folder you mounted to the docker container as described in the previous chapter. Look for the "mongodbURI" entry and replace it with the URI of your mongoDB instance.
+
 ```
 {
     "hc-caas": {
@@ -192,7 +196,7 @@ For convenience purposes, the AMI/Docker Image already comes with a preconfigure
 ...
 ```
 
-If you are using the AMI, you will notice that mongodb is already preconfigured with an administrator user so access to mongoDB is already somewhat secure. This means that for testing purposes you can use one of the CaaS instances as your database instance as well. In that case, all you have to do is open the mongoDB port (27017) in the security group of your instance to make the database accessible from the other instances. However, this is not recommended for production environments. At the very least you should change the password for the admin user.
+
 
 If you are running mongoDB on a separate machine, there is no point in running the  the built-in mongoDB instance. To disable it, you can set the nomongo environment variable on the instance (in docker: -e nomongo=true when starting the container) or just delete the lines that start mongoDB from the startAll.sh script.
 
