@@ -54,16 +54,16 @@ This GitHub Project serves as the template for the AMI/Docker which contains mos
   * Select the region you want to copy the AMI to and click on "Copy"
   * After the copy operation is completed (which can take a few minutes) you can switch to your desired region and launch your new instance directly from the copied AMI instead of selecting it manually as desribed in the following 3 steps.
 * Click on the "Launch Instance" button  
-<img src="readmeImages/launchInstance.png" alt="Alt text" width="600"/>
+<img src="readmeImages/launchInstance.png" alt="Alt text" width="600"/>  
 * Under "Applications and OS Images select "Browse More AMI's"
 * Click on Community AMI's, search for "caas". The current AMI name is "caas-ubuntu-0.3.0-public"  
-<img src="readmeImages/selectAMI.png" alt="Alt text" width="900"/>
+<img src="readmeImages/selectAMI.png" alt="Alt text" width="900"/>  
 * Select the instance type. We recommend at least a t2.medium instance so there is enough memory for the conversion process.
 * Create a new keypair or select an existing key-pair for this instance. As this will be a linux instance, the recommended way is to use RSA key-pairs with the .ppk format for use with Putty later.  
-<img src="readmeImages/keypair.png" alt="Alt text" width="600"/>
+<img src="readmeImages/keypair.png" alt="Alt text" width="600"/>  
 * Click on "Edit Network Settings and ensure that Auto-assign Public IP is set to "Enable"
 * Create a new security group or choose an existing one. For initial testing only the SSH Port 22 as well as Port 80 needs to be open. However, to run CaaS as part of a scalable backened you also need to open port 3001.  
-<img src="readmeImages/ports.png" alt="Alt text" width="900"/>
+<img src="readmeImages/ports.png" alt="Alt text" width="900"/>  
 * Launch the instance and wait for it to start up. This can take a few minutes.
 * As soon as the instance is running CaaS is already active. You can test this by navigating to the status page of the instance. This is the public IP address of the instance followed by "caas_um_api/status". For example: http://3.87.229.101/caas_um_api/status. The screen should look like this:  
 <img src="readmeImages/statusPage.png" alt="Alt text" width="600"/>
@@ -92,7 +92,7 @@ To set the license you need to login to the instance and update the communicator
 #### Windows
 * Download and install Docker Desktop from [here](https://www.docker.com/products/docker-desktop)
 * Ensure WSL 2 is enabled and all other requirements for docker are met.
-
+g
 #### Linux
 * Follow the instructions for your distribution from [here](https://docs.docker.com/engine/install/)
 * For Amazon linux specifically the following steps should be sufficient to get docker installed:  
