@@ -8,7 +8,7 @@
 
 ## Quick Access to latest version:
 **AMI: 	caas-ubuntu-0.3.0-public (available in us-east-1 / N. Virginia)  
-Docker Image: eric5544/caas:0.3.0**
+Docker Image: guido5544/caas:0.3.0**
 
 ## Introduction
 We have recently released [CaaS](https://forum.techsoft3d.com/t/conversion-and-streaming-backend-for-hoops-communicator/1314), which is a fully scalable conversion, streaming and model management backend for HOOPS Communicator. If you are a node.js user, it is fairly straightforward to get up and running with CaaS. However, there is still a bunch of initial configuration required. In addition, you need to setup your machine to run HOOPS Communicator, which can be a bit of a pain. To make things easier, we have packaged up all of CaaS, including the [User Management Component](https://forum.techsoft3d.com/t/user-management-library-for-caas-released/1535) as well as two front-end reference applications and of course HOOPS Communicator itself into a a pre-configured Ubuntu Linux AMI (Amazon Machine Image). In addition, we have also created a Docker Image that can be deployed on any machine that supports Docker.
@@ -104,10 +104,10 @@ sudo reboot
 ```
 ### Step 2: Running the CaaS Docker Image
 * Pull the latest preview version of the CaaS Docker image from docker hub:  
-``docker pull eric5544/caas:0.3.0``
+``docker pull guido5544/caas:0.3.0``
 * Create a new file called communicatorLicense.txt in your user directory and copy the HOOPS Communicator license key into it
 * Run the docker image (make sure to map port 80 to port 80 on the host machine and mount the license file):  
-``docker run -p 80:80 -v ${PWD}/communicatorLicense.txt:/app/communicatorLicense.txt eric5544/caas:0.3.0``
+``docker run -p 80:80 -v ${PWD}/communicatorLicense.txt:/app/communicatorLicense.txt guido5544/caas:0.3.0``
 * The docker container will now start up and run CaaS which can be accessed as described in the next chapter. However all the data is ephemeral and will be lost when the docker container is stopped or the host machine is rebooted. To persist the data you need to mount two volumes to the docker container, one for all the upload and converted files and one for the mongoDB database. In order to do this:
 * create two directories on your host machine:  
 ```
@@ -120,7 +120,7 @@ mkdir mongoData
  ``docker cp <containerid>:/app/caasComplete/config/local.json ${PWD}/local.json``
 
 * Run the docker container again, this time also mounting the two directories and the configuration file:  
-``docker run -p 80:80 -v ${PWD}/communicatorLicense.txt:/app/communicatorLicense.txt  -v ${PWD}/tempData:/app/tempData  -v ${PWD}/mongoData:/var/lib/mongodb -v ${PWD}/local.json:/app/caasComplete/config/local.json eric5544/caas:0.3.0``  
+``docker run -p 80:80 -v ${PWD}/communicatorLicense.txt:/app/communicatorLicense.txt  -v ${PWD}/tempData:/app/tempData  -v ${PWD}/mongoData:/var/lib/mongodb -v ${PWD}/local.json:/app/caasComplete/config/local.json guido5544/caas:0.3.0``  
 * After those steps the CaaS docker container will now persist its data and is locally configurable.
 
 
