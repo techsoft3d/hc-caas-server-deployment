@@ -60,11 +60,13 @@ const fs = require('fs');
 
     // app.use((req, res, next) => {
     //   if (req.url.includes('caas_api')) {
-    //     proxy.web(req, res, { target: 'http://localhost:3001' });
+    //     const headers = { 'X-Forwarded-For': req.ip };
+    //     proxy.web(req, res, { target: 'http://localhost:3001', headers });
     //   } else {
     //     next();
     //   }
     // });
+
 
     server.on('upgrade', async function (req, socket, head) {
       console.log("Client IP:" + req.socket.remoteAddress);
