@@ -57,6 +57,15 @@ const fs = require('fs');
       server.listen(80);
     }
 
+
+    // app.use((req, res, next) => {
+    //   if (req.url.includes('caas_api')) {
+    //     proxy.web(req, res, { target: 'http://localhost:3001' });
+    //   } else {
+    //     next();
+    //   }
+    // });
+
     server.on('upgrade', async function (req, socket, head) {
       console.log("Client IP:" + req.socket.remoteAddress);
       proxy.ws(req, socket, head, { target: 'ws://127.0.0.1:3200' });
